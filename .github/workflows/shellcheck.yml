@@ -1,0 +1,38 @@
+name: ShellCheck
+
+on:
+  push:
+    paths:
+      - "**.sh"
+      - ".github/workflows/shellcheck.yml"
+  pull_request:
+    paths:
+      - "**.sh"
+      - ".github/workflows/shellcheck.yml"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck on all scripts
+        run: |
+          # Find all executable or *.sh files and lint them
+          mapfile -t files < <(git ls-files '*.sh'; find . -type f -perm -111 -not -path '*/\.*' -print)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "No shell scripts found."
+            exit 0
+          fi
+          printf '%s\n' "${files[@]}" | sort -u | xargs -r shellcheck -x
+
+      - name: Annotate output (optional strict mode)
+        if: ${{ failure() }}
+        run: |
+          echo "::notice::ShellCheck found issues. Please fix warnings/errors above."
