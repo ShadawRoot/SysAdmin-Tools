@@ -1,3 +1,5 @@
+![ShellCheck](https://github.com/ShadawRoot/SysAdmin-Tools/actions/workflows/shellcheck.yml/badge.svg)
+
 # SysAdmin-Tools
 A collection of Linux Bash scripts for automation, system administration, and DevOps labs.
 # 🐧 Linux Bash Scripts Collection
